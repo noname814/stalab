@@ -1,0 +1,80 @@
+.py:
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+
+driver = webdriver.Chrome()
+driver.maximize_window()
+driver.get(r"E:\home.html")
+
+# TC_001 - Valid Login
+driver.find_element(By.ID, "email").send_keys("test@gmail.com")
+driver.find_element(By.ID, "password").send_keys("Test@123")
+driver.find_element(By.ID, "loginBtn").click()
+time.sleep(1)
+msg = driver.find_element(By.ID, "message").text
+print("TC_001 Valid Login:", "PASS" if "Successful" in msg else "FAIL")
+
+# Clear fields
+driver.find_element(By.ID, "email").clear()
+driver.find_element(By.ID, "password").clear()
+
+# TC_002 - Wrong Password
+driver.find_element(By.ID, "email").send_keys("test@gmail.com")
+driver.find_element(By.ID, "password").send_keys("wrongpass")
+driver.find_element(By.ID, "loginBtn").click()
+time.sleep(1)
+msg = driver.find_element(By.ID, "message").text
+print("TC_002 Wrong Password:", "PASS" if "Invalid" in msg else "FAIL")
+
+# Clear fields
+driver.find_element(By.ID, "email").clear()
+driver.find_element(By.ID, "password").clear()
+
+# TC_003 - Empty Fields
+driver.find_element(By.ID, "loginBtn").click()
+time.sleep(1)
+msg = driver.find_element(By.ID, "message").text
+print("TC_003 Empty Fields:", "PASS" if "empty" in msg else "FAIL")
+
+time.sleep(2)
+driver.quit()
+
+
+.html:
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+</head>
+<body>
+  <h1>Login Page</h1>
+
+  <input type="text" id="email" placeholder="Enter email"><br><br>
+  <input type="password" id="password" placeholder="Enter password"><br><br>
+  <button id="loginBtn" onclick="handleLogin()">Login</button>
+
+  <p id="message"></p>
+
+  <script>
+    function handleLogin() {
+      var email = document.getElementById("email").value;
+      var password = document.getElementById("password").value;
+      var msg = document.getElementById("message");
+
+      if (email == "" || password == "") {
+        msg.style.color = "red";
+        msg.textContent = "Fields cannot be empty!";
+      } else if (email == "test@gmail.com" && password == "Test@123") {
+        msg.style.color = "green";
+        msg.textContent = "Login Successful!";
+      } else {
+        msg.style.color = "red";
+        msg.textContent = "Invalid email or password!";
+      }
+    }
+  </script>
+</body>
+</html>
